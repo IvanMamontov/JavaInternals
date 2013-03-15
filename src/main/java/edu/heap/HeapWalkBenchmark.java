@@ -3,6 +3,10 @@ package edu.heap;
 import com.google.caliper.Runner;
 import com.google.caliper.SimpleBenchmark;
 
+/**
+ * To start use following command:
+ * {@code java edu.heap.HeapWalkBenchmark -JmemoryMax=-Xmx4g -JmemoryStart=-Xms4g --trials 1}
+ */
 public class HeapWalkBenchmark extends SimpleBenchmark {
 
     public void timeLinear(int reps) {
