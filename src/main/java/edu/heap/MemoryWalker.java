@@ -21,8 +21,8 @@ public abstract class MemoryWalker implements Walker {
     private long[] memory;
 
     MemoryWalker() {
-        memory = new long[MemoryWalker.ARRAY_SIZE];
-        for (int i = 0; i < MemoryWalker.ARRAY_SIZE; i++) {
+        memory = new long[ARRAY_SIZE];
+        for (int i = 0; i < ARRAY_SIZE; i++) {
             memory[i] = 777;
         }
     }
