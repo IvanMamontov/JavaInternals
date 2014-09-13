@@ -1,4 +1,4 @@
-package edu.heap;
+package edu.hal.cache;
 
 public class PrincipeOfLocalityTest {
     private static final int LONG_SIZE = 8;

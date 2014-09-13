@@ -1,3 +1,5 @@
+package edu.hal.cache;
+
 public final class FalseSharing2 implements Runnable {
     public final static int NUM_THREADS = 4; // change
     public final static long ITERATIONS = 500L * 1000L * 1000L;

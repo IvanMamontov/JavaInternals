@@ -1,4 +1,4 @@
-package edu.heap;
+package edu.hal.cache;
 
 /**
  * @author Ivan Mamontov
