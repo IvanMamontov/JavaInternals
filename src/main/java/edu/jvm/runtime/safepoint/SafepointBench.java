@@ -1,17 +1,27 @@
 package edu.jvm.runtime.safepoint;
 
 import org.openjdk.jmh.annotations.*;
+import org.openjdk.jmh.profile.HotspotRuntimeProfiler;
+import org.openjdk.jmh.profile.StackProfiler;
+import org.openjdk.jmh.runner.Runner;
+import org.openjdk.jmh.runner.RunnerException;
+import org.openjdk.jmh.runner.options.Options;
+import org.openjdk.jmh.runner.options.OptionsBuilder;
+import org.openjdk.jmh.runner.options.TimeValue;
+import org.openjdk.jmh.runner.options.VerboseMode;
 
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @State(Scope.Group)
-@BenchmarkMode(Mode.Throughput)
-@OutputTimeUnit(TimeUnit.SECONDS)
+@BenchmarkMode(Mode.AverageTime)
+@OutputTimeUnit(TimeUnit.NANOSECONDS)
 @Fork(value = 3, jvmArgs = {"-XX:+PrintSafepointStatistics", "-XX:PrintSafepointStatisticsTimeout=30", "-XX:-UseBiasedLocking"})
 @Warmup(iterations = 1, time = 1, timeUnit = TimeUnit.SECONDS)
 @Measurement(iterations = 2, time = 20, timeUnit = TimeUnit.SECONDS)
 public class SafepointBench {
+
+    int i = 0;
 
     @Benchmark
     @Group("g")
@@ -28,8 +38,8 @@ public class SafepointBench {
     @Benchmark
     @Group("g")
     @GroupThreads(1)
-    public long flash() {
-        return System.nanoTime();
+    public void flash() {
+        i++;
     }
 
     @Benchmark
@@ -39,5 +49,13 @@ public class SafepointBench {
         Thread.sleep(20);
         Map<Thread, StackTraceElement[]> allStackTraces = Thread.getAllStackTraces();
         return allStackTraces.size();
+    }
+
+    public static void main(String[] args) throws RunnerException {
+        Options options = new OptionsBuilder()
+                .include(SafepointBench.class.getName())
+                .verbosity(VerboseMode.NORMAL)
+                .build();
+        new Runner(options).run();
     }
 }
