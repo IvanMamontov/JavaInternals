@@ -18,6 +18,7 @@ public class SafepointBench {
     @GroupThreads(1)
     public double slowpoke() {
         double d = 0;
+        //no chance to unroll
         for (int j = 1; j < 2000000; j++) {
             d += Math.log(Math.E * j);
         }
@@ -27,14 +28,14 @@ public class SafepointBench {
     @Benchmark
     @Group("g")
     @GroupThreads(1)
-    public double flash() {
+    public long flash() {
         return System.nanoTime();
     }
 
     @Benchmark
     @Group("g")
     @GroupThreads(1)
-    public int tracer() throws Exception {
+    public int sampler() throws Exception {
         Thread.sleep(20);
         Map<Thread, StackTraceElement[]> allStackTraces = Thread.getAllStackTraces();
         return allStackTraces.size();
