@@ -1,6 +1,7 @@
 package edu.jvm.runtime.safepoint;
 
 import org.openjdk.jmh.annotations.*;
+import org.openjdk.jmh.profile.LinuxPerfAsmProfiler;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
@@ -28,6 +29,13 @@ public class ObserverEffectBench {
     }
 
     @Benchmark
+    @Group("observing")
+    @GroupThreads(1)
+    public void observed_flash() {
+        flash();
+    }
+
+    @Benchmark
     @Group("free")
     @GroupThreads(1)
     public void free_flash() {
@@ -39,13 +47,6 @@ public class ObserverEffectBench {
     @GroupThreads(1)
     public double free_slowpoke() {
         return slowpoke();
-    }
-
-    @Benchmark
-    @Group("observing")
-    @GroupThreads(1)
-    public void observed_flash() {
-        flash();
     }
 
     public double slowpoke() {
@@ -61,6 +62,9 @@ public class ObserverEffectBench {
         i++;
     }
 
+    /**
+     *
+     */
     @Benchmark
     @Group("observing")
     @GroupThreads(1)
@@ -70,10 +74,14 @@ public class ObserverEffectBench {
         return allStackTraces.size();
     }
 
+    /**
+     *
+     */
     public static void main(String[] args) throws RunnerException {
         Options options = new OptionsBuilder()
                 .include(ObserverEffectBench.class.getName())
                 .verbosity(VerboseMode.NORMAL)
+                .addProfiler(LinuxPerfAsmProfiler.class)
                 .build();
         new Runner(options).run();
     }

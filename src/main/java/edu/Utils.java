@@ -64,7 +64,7 @@ public class Utils {
     }
 
     private static void shuffle(int[] array) {
-        Random rnd = new Random(0xBAD_BEE);
+        Random rnd = new Random(0xBADBEE);
         for (int i = array.length; i > 1; i--)
             swap(array, i-1, rnd.nextInt(i));
 
@@ -77,7 +77,7 @@ public class Utils {
     }
 
     private static void shuffle(boolean[] array) {
-        Random rnd = new Random(0xBAD_BEE);
+        Random rnd = new Random(0xBADBEE);
         for (int i = array.length; i > 1; i--)
             swap(array, i-1, rnd.nextInt(i));
 
@@ -90,28 +90,28 @@ public class Utils {
     }
 
     private static void fill(int[] array) {
-        Random rnd = new Random(0xBAD_BEE);
+        Random rnd = new Random(0xBADBEE);
         for(int i = 0; i<array.length; i++) {
             array[i] = rnd.nextInt();
         }
     }
 
     private static void fill(long[] array) {
-        Random rnd = new Random(0xBAD_BEE);
+        Random rnd = new Random(0xBADBEE);
         for(int i = 0; i<array.length; i++) {
             array[i] = rnd.nextLong();
         }
     }
 
     private static void fillPositive(int[] array) {
-        Random rnd = new Random(0xBAD_BEE);
+        Random rnd = new Random(0xBADBEE);
         for(int i = 0; i<array.length; i++) {
             array[i] = Math.abs(rnd.nextInt());
         }
     }
 
     private static void fill(double[] array) {
-        Random rnd = new Random(0xBAD_BEE);
+        Random rnd = new Random(0xBADBEE);
         for (int i = 0; i < array.length; i++) {
             array[i] = rnd.nextDouble();
         }

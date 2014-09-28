@@ -7,7 +7,6 @@ import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
-import org.openjdk.jmh.runner.options.TimeValue;
 import org.openjdk.jmh.runner.options.VerboseMode;
 
 import java.util.concurrent.TimeUnit;
@@ -15,7 +14,16 @@ import java.util.concurrent.TimeUnit;
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.Throughput)
 @OutputTimeUnit(TimeUnit.SECONDS)
-@Fork(value = 2, jvmArgs = {"-XX:-UseBiasedLocking", "-Djmh.stack.lines=4"})
+@Fork(value = 2, jvmArgs = {
+        "-XX:-UseBiasedLocking",
+        "-Djmh.stack.lines=4",
+        "-XX:+UnlockDiagnosticVMOptions",
+        "-XX:+TraceClassLoading",
+        "-XX:+LogCompilation",
+        "-XX:+PrintAssembly",
+        "-XX:PrintAssemblyOptions=intel",
+        "-XX:CompileCommand=print,*ProfilerBench_cold.*hot*"
+})
 @Warmup(iterations = 2, time = 5, timeUnit = TimeUnit.SECONDS)
 @Measurement(iterations = 2, time = 10, timeUnit = TimeUnit.SECONDS)
 public class ProfilerBench {
