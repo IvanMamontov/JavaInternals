@@ -1,7 +1,8 @@
 package edu.jvm.runtime.safepoint;
 
+import edu.Utils;
 import org.openjdk.jmh.annotations.*;
-import org.openjdk.jmh.profile.HotspotRuntimeProfiler;
+import org.openjdk.jmh.profile.LinuxPerfAsmProfiler;
 import org.openjdk.jmh.profile.StackProfiler;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
@@ -17,12 +18,13 @@ import java.util.concurrent.TimeUnit;
 @Fork(value = 2, jvmArgs = {
         "-XX:-UseBiasedLocking",
         "-Djmh.stack.lines=4",
-        "-XX:+UnlockDiagnosticVMOptions",
-        "-XX:+TraceClassLoading",
-        "-XX:+LogCompilation",
-        "-XX:+PrintAssembly",
-        "-XX:PrintAssemblyOptions=intel",
-        "-XX:CompileCommand=print,*ProfilerBench_cold.*hot*"
+        "-Djmh.stack.period=20"
+//        "-XX:+UnlockDiagnosticVMOptions",
+//        "-XX:+TraceClassLoading",
+//        "-XX:+LogCompilation",
+//        "-XX:+PrintAssembly",
+//        "-XX:PrintAssemblyOptions=intel",
+//        "-XX:CompileCommand=print,*ProfilerBench_cold.*hot*",
 })
 @Warmup(iterations = 2, time = 5, timeUnit = TimeUnit.SECONDS)
 @Measurement(iterations = 2, time = 10, timeUnit = TimeUnit.SECONDS)
@@ -30,49 +32,34 @@ public class ProfilerBench {
 
     public static final int ITERATIONS_COUNT = Integer.MAX_VALUE >> 5;
 
-    int[] array = new int[1024];
-
-    public void hot(int i) {
-        int ii = (i + 10 * 100) % array.length;
-        int jj = (ii + i / 33) % array.length;
-        if (ii < 0) ii = -ii;
-        if (jj < 0) jj = -jj;
-        array[ii] = array[jj] + 1;
-    }
-
-    @CompilerControl(value = CompilerControl.Mode.EXCLUDE)
-    public void hotWithSafepoint(int i) {
-        hot(i);
+    public double hot() {
+        return Utils.slowpoke(16);
     }
 
     @Benchmark
-    public void cold() {
+    public double coldIntLoop() {
+        double result = 0;
         for (int i = 0; i < ITERATIONS_COUNT; i++) {
-            hot(i);
+            result += hot();
         }
+        return result;
     }
 
     @Benchmark
-    public void coldWithSafepoint() {
+    public double coldLongLoop() {
+        double result = 0;
         for (long i = 0; i < ITERATIONS_COUNT; i++) {
-            //safepoint is here
-            hot((int) i);
+            result += hot();
         }
-    }
-
-    @Benchmark
-    public void coldWithSafepoint2() {
-        for (long i = 0; i < ITERATIONS_COUNT; i++) {
-            //safepoint is here
-            hotWithSafepoint((int) i);
-        }
+        return result;
     }
 
     public static void main(String[] args) throws RunnerException {
         Options options = new OptionsBuilder()
                 .include(ProfilerBench.class.getName())
                 .addProfiler(StackProfiler.class)
-                .addProfiler(HotspotRuntimeProfiler.class)
+//                .addProfiler(HotspotRuntimeProfiler.class)
+//                .addProfiler(LinuxPerfAsmProfiler.class)
                 .verbosity(VerboseMode.NORMAL)
                 .build();
         new Runner(options).run();

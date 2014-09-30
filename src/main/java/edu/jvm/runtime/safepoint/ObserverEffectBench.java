@@ -1,6 +1,8 @@
 package edu.jvm.runtime.safepoint;
 
+import edu.Utils;
 import org.openjdk.jmh.annotations.*;
+import org.openjdk.jmh.infra.Blackhole;
 import org.openjdk.jmh.profile.LinuxPerfAsmProfiler;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
@@ -14,52 +16,41 @@ import java.util.concurrent.TimeUnit;
 @State(Scope.Group)
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
-@Fork(value = 3, jvmArgs = {"-XX:+PrintSafepointStatistics", "-XX:PrintSafepointStatisticsTimeout=30", "-XX:-UseBiasedLocking"})
+@Fork(value = 3, jvmArgs = {
+        "-XX:+PrintSafepointStatistics",
+        "-XX:PrintSafepointStatisticsTimeout=30",
+        "-XX:-UseBiasedLocking"
+})
 @Warmup(iterations = 1, time = 1, timeUnit = TimeUnit.SECONDS)
 @Measurement(iterations = 2, time = 20, timeUnit = TimeUnit.SECONDS)
 public class ObserverEffectBench {
-
-    int i = 0;
 
     @Benchmark
     @Group("observing")
     @GroupThreads(1)
     public double observed_slowpoke() {
-        return slowpoke();
+        return Utils.slowpoke(2000000);
     }
 
     @Benchmark
     @Group("observing")
     @GroupThreads(1)
     public void observed_flash() {
-        flash();
+        Blackhole.consumeCPU(10);
     }
 
     @Benchmark
     @Group("free")
     @GroupThreads(1)
     public void free_flash() {
-        flash();
+        Blackhole.consumeCPU(10);
     }
 
     @Benchmark
     @Group("free")
     @GroupThreads(1)
     public double free_slowpoke() {
-        return slowpoke();
-    }
-
-    public double slowpoke() {
-        double d = 0;
-        //no chance to unroll
-        for (int j = 1; j < 2000000; j++) {
-            d += Math.log(Math.E * j);
-        }
-        return d;
-    }
-
-    public void flash() {
-        i++;
+        return Utils.slowpoke(2000000);
     }
 
     /**

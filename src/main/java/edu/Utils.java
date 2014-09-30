@@ -1,19 +1,13 @@
 package edu;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Random;
 
 /**
- * Quantum Performance Effects, utility methods
  *
- * Is source code the best documentation? It is an open question.
- * At least, source code is the most precise documentation.
- *
- * @author Sergey Kuksenko
  */
 public class Utils {
+
+    public static final int SEED = 0xDEADBEEF;
 
     public static double[] newRandomDoubleArray(int size) {
         double[] arr = new double[size];
@@ -27,100 +21,37 @@ public class Utils {
         return arr;
     }
 
-    public static int[] newRandomPositiveIntArray(int size) {
-        int[] arr = new int[size];
-        fill(arr);
-        return arr;
-    }
-
-    public static int[] sortedCopyOf(int[] array) {
-        int[] newArray = Arrays.copyOf(array, array.length);
-        Arrays.sort(newArray);
-        return newArray;
-    }
-
-    public static <T> T[] sortedCopyOf(T[] original, Comparator<? super T> c) {
-        T[] newArray = Arrays.copyOf(original, original.length);
-        Arrays.sort(newArray, c);
-        return newArray;
-    }
-
-    public static int[] shuffledCopyOf(int[] array) {
-        int[] newArray = Arrays.copyOf(array, array.length);
-        shuffle(newArray);
-        return newArray;
-    }
-
-    public static boolean[] shuffledCopyOf(boolean[] array) {
-        boolean[] newArray = Arrays.copyOf(array, array.length);
-        shuffle(newArray);
-        return newArray;
-    }
-
-    public static <T> T[] shuffledCopyOf(T[] original) {
-        T[] newArray = Arrays.copyOf(original, original.length);
-        Collections.shuffle(Arrays.asList(newArray));
-        return newArray;
-    }
-
-    private static void shuffle(int[] array) {
-        Random rnd = new Random(0xBADBEE);
-        for (int i = array.length; i > 1; i--)
-            swap(array, i-1, rnd.nextInt(i));
-
-    }
-
-    private static void swap(int[] array, int i0, int i1) {
-        int x = array[i0];
-        array[i0] = array[i1];
-        array[i1] = x;
-    }
-
-    private static void shuffle(boolean[] array) {
-        Random rnd = new Random(0xBADBEE);
-        for (int i = array.length; i > 1; i--)
-            swap(array, i-1, rnd.nextInt(i));
-
-    }
-
-    private static void swap(boolean[] array, int i0, int i1) {
-        boolean x = array[i0];
-        array[i0] = array[i1];
-        array[i1] = x;
-    }
-
     private static void fill(int[] array) {
-        Random rnd = new Random(0xBADBEE);
-        for(int i = 0; i<array.length; i++) {
+        Random rnd = new Random(SEED);
+        for (int i = 0; i < array.length; i++) {
             array[i] = rnd.nextInt();
         }
     }
 
-    private static void fill(long[] array) {
-        Random rnd = new Random(0xBADBEE);
-        for(int i = 0; i<array.length; i++) {
-            array[i] = rnd.nextLong();
-        }
-    }
-
-    private static void fillPositive(int[] array) {
-        Random rnd = new Random(0xBADBEE);
-        for(int i = 0; i<array.length; i++) {
-            array[i] = Math.abs(rnd.nextInt());
-        }
-    }
-
     private static void fill(double[] array) {
-        Random rnd = new Random(0xBADBEE);
+        Random rnd = new Random(SEED);
         for (int i = 0; i < array.length; i++) {
             array[i] = rnd.nextDouble();
         }
     }
 
-
-    public static long[] newRandomLongArray(int size) {
-        long[] longs = new long[size];
-        fill(longs);
-        return longs;
+    /**
+     * Hotspot doesn't put safepoints into counted int loops, because it
+     * assumes they will terminate just "fast enough". Even a stop-the-world
+     * will have to wait until this loop will finish.
+     * <p/>
+     * In this method we have very tight loop which do small but expensive
+     * computations without safepoint polling.
+     * <p/>
+     * <b>Note:</b> this method has non-linear growth on low iteration counts.
+     *
+     * @param iterations amount of loop iterations.
+     */
+    public static double slowpoke(int iterations) {
+        double d = 0;
+        for (int j = 1; j < iterations; j++) {
+            d += Math.log(Math.E * j);
+        }
+        return d;
     }
 }
