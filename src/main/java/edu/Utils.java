@@ -7,7 +7,7 @@ import java.util.Random;
  */
 public class Utils {
 
-    public static final int SEED = 0xDEADBEEF;
+    public static final int SEED = 0xCAFEBABE;
 
     public static double[] newRandomDoubleArray(int size) {
         double[] arr = new double[size];
@@ -37,8 +37,9 @@ public class Utils {
 
     /**
      * Hotspot doesn't put safepoints into counted int loops, because it
-     * assumes they will terminate just "fast enough". Even a stop-the-world
-     * will have to wait until this loop will finish.
+     * assumes that they will terminate just "fast enough". So server
+     * compiler will generate less optimal loop code. Even a
+     * stop-the-world will have to wait until this loop will finish.
      * <p/>
      * In this method we have very tight loop which do small but expensive
      * computations without safepoint polling.
@@ -46,6 +47,8 @@ public class Utils {
      * <b>Note:</b> this method has non-linear growth on low iteration counts.
      *
      * @param iterations amount of loop iterations.
+     * @see <a href="https://bugs.openjdk.java.net/browse/JDK-6869327">Add new
+     * C2 flag to keep safepoints in counted loops</a>
      */
     public static double slowpoke(int iterations) {
         double d = 0;
