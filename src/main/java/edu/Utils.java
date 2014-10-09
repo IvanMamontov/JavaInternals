@@ -37,9 +37,9 @@ public class Utils {
 
     /**
      * Hotspot doesn't put safepoints into counted int loops, because it
-     * assumes that they will terminate just "fast enough". So server
-     * compiler will generate less optimal loop code. Even a
-     * stop-the-world will have to wait until this loop will finish.
+     * assumes that they will terminate just "fast enough"(In this case
+     * server compiler will generate more optimal loop code).
+     * Even a stop-the-world will have to wait until this loop will finish.
      * <p/>
      * In this method we have very tight loop which do small but expensive
      * computations without safepoint polling.

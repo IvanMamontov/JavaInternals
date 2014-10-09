@@ -53,8 +53,9 @@ public class ProfilerBench {
     }
 
     /**
-     * In case of using "long" instead of "int" as a loop variable, HotSpot
-     * will be more cautious and place a safepoint into the loop.
+     * This method has the same implementation as {@link #coldIntLoop()}
+     * except of using "long" instead of "int" as a loop variable.
+     * HotSpot will be more cautious and place a safepoint into the loop.
      * So can observe this method as the "hottest" in sampling-based profiler.
      */
     @Benchmark

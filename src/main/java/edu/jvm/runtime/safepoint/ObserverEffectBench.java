@@ -17,9 +17,9 @@ import java.util.concurrent.TimeUnit;
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
 @Fork(value = 3, jvmArgs = {
-        "-XX:+PrintSafepointStatistics",
-        "-XX:PrintSafepointStatisticsTimeout=30",
-        "-XX:-UseBiasedLocking"
+        "-XX:+PrintSafepointStatistics",//print statistics about safepoint synchronization
+        "-XX:PrintSafepointStatisticsTimeout=30",//print safepoint statistics only when safepoint takes more than 30 millis
+        "-XX:-UseBiasedLocking"//disable biased locking in order to avoid redundant safepoint polling
 })
 @Warmup(iterations = 1, time = 1, timeUnit = TimeUnit.SECONDS)
 @Measurement(iterations = 2, time = 20, timeUnit = TimeUnit.SECONDS)
@@ -39,6 +39,18 @@ public class ObserverEffectBench {
         Blackhole.consumeCPU(10);
     }
 
+    /**
+     *
+     */
+    @Benchmark
+    @Group("observing")
+    @GroupThreads(1)
+    public int sampler() throws Exception {
+        Thread.sleep(20);
+        Map<Thread, StackTraceElement[]> allStackTraces = Thread.getAllStackTraces();
+        return allStackTraces.size();
+    }
+
     @Benchmark
     @Group("free")
     @GroupThreads(1)
@@ -51,18 +63,6 @@ public class ObserverEffectBench {
     @GroupThreads(1)
     public double free_slowpoke() {
         return Utils.slowpoke(2000000);
-    }
-
-    /**
-     *
-     */
-    @Benchmark
-    @Group("observing")
-    @GroupThreads(1)
-    public int sampler() throws Exception {
-        Thread.sleep(20);
-        Map<Thread, StackTraceElement[]> allStackTraces = Thread.getAllStackTraces();
-        return allStackTraces.size();
     }
 
     /**
