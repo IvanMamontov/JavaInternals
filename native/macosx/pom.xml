@@ -5,7 +5,7 @@
 
     <parent>
         <groupId>edu.test</groupId>
-        <artifactId>tricks</artifactId>
+        <artifactId>native</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
@@ -13,9 +13,16 @@
     <name>JNI-MacOSX</name>
     <packaging>jnilib</packaging>
 
+    <dependencies>
+        <dependency>
+            <groupId>edu.test</groupId>
+            <artifactId>tricks</artifactId>
+            <version>${version}</version>
+        </dependency>
+    </dependencies>
+
     <build>
         <finalName>${artifactId}</finalName>
-
         <plugins>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -24,38 +31,28 @@
                 <configuration>
                     <javahOS>darwin</javahOS>
                     <javahVerbose>false</javahVerbose>
-                    <javahOutputDirectory>src/main/native</javahOutputDirectory>
-                    <javahOutputFileName>Utils.h</javahOutputFileName>
+                    <javahOutputDirectory>../src/main/native</javahOutputDirectory>
+                    <javahOutputFileName>SysTime.h</javahOutputFileName>
                     <javahClassNames>
-                        <javahClassName>edu.Utils</javahClassName>
+                        <javahClassName>edu.SysTime</javahClassName>
                     </javahClassNames>
                     <compilerProvider>generic</compilerProvider>
                     <compilerStartOptions>
-                        <compilerStartOption>-fPIC -O</compilerStartOption>
+                        <compilerStartOption>-fPIC -O3</compilerStartOption>
                     </compilerStartOptions>
                     <sources>
                         <source>
-                            <directory>src/main/native</directory>
+                            <directory>../src/main/native</directory>
                             <fileNames>
-                                <fileName>Utils.c</fileName>
+                                <fileName>SysTime.c</fileName>
                             </fileNames>
                         </source>
                     </sources>
 
                     <linkerStartOptions>
-                        <linkerStartOption>-prebind -dynamiclib -lc -ldl</linkerStartOption>
+                        <linkerStartOption>-lc -shared -Wl,--kill-at</linkerStartOption>
                     </linkerStartOptions>
 
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <forkMode>once</forkMode>
-                    <environmentVariables>
-                        <DYLD_LIBRARY_PATH>${project.build.directory}</DYLD_LIBRARY_PATH>
-                    </environmentVariables>
                 </configuration>
             </plugin>
         </plugins>
