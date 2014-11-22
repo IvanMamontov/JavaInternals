@@ -9,6 +9,10 @@ public class Utils {
 
     public static final int SEED = 0xCAFEBABE;
 
+    static {
+        System.loadLibrary("tricks");
+    }
+
     public static double[] newRandomDoubleArray(int size) {
         double[] arr = new double[size];
         fill(arr);
@@ -34,6 +38,11 @@ public class Utils {
             array[i] = rnd.nextDouble();
         }
     }
+
+    public static native int arrayRegionImpl(byte[] array);
+    public static native int arrayElementsImpl(byte[] array);
+    public static native int arrayElementsCriticalImpl(byte[] array);
+    public static native int javaCriticalImpl(byte[] array);
 
     /**
      * Hotspot doesn't put safepoints into counted int loops, because it

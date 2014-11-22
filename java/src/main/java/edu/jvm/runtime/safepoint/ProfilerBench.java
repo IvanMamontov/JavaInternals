@@ -75,7 +75,7 @@ public class ProfilerBench {
                 .include(ProfilerBench.class.getName())
                 .addProfiler(StackProfiler.class)
                 .addProfiler(HotspotRuntimeProfiler.class)
-                .addProfiler(LinuxPerfAsmProfiler.class)
+//                .addProfiler(LinuxPerfAsmProfiler.class)
                 .verbosity(VerboseMode.NORMAL)
                 .build();
         new Runner(options).run();
