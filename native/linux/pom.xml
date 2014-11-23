@@ -51,7 +51,7 @@
                         </source>
                     </sources>
                     <linkerStartOptions>
-                        <linkerStartOption>-shared -lc -Wl,--kill-at</linkerStartOption>
+                        <linkerStartOption>-shared -lc</linkerStartOption>
                     </linkerStartOptions>
                 </configuration>
             </plugin>
