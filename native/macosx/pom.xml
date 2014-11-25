@@ -31,11 +31,13 @@
                 <configuration>
                     <javahOS>darwin</javahOS>
                     <javahVerbose>false</javahVerbose>
-                    <javahOutputDirectory>../src/main/native</javahOutputDirectory>
+                    <javahOutputDirectory>../src/main/native/include</javahOutputDirectory>
                     <javahOutputFileName>SysTime.h</javahOutputFileName>
                     <javahClassNames>
                         <javahClassName>edu.SysTime</javahClassName>
                     </javahClassNames>
+
+
                     <compilerProvider>generic</compilerProvider>
                     <compilerStartOptions>
                         <compilerStartOption>-fPIC -O3</compilerStartOption>
@@ -45,11 +47,19 @@
                             <directory>../src/main/native</directory>
                             <fileNames>
                                 <fileName>SysTime.c</fileName>
+                                <fileName>simdbitpacking.c</fileName>
+                                <fileName>simdcomputil.c</fileName>
+                                <fileName>simdintegratedbitpacking.c</fileName>
+                                <fileName>unit.c</fileName>
                             </fileNames>
                         </source>
+                        <source>
+                            <directory>/Users/imamontov/projects/simdcomp/include</directory>
+                        </source>
                     </sources>
+                    <externalLibDirectory>/Users/imamontov/projects/simdcomp/</externalLibDirectory>
                     <linkerStartOptions>
-                        <linkerStartOption>-lc -shared -Wl,--kill-at</linkerStartOption>
+                        <linkerStartOption>-lc -shared</linkerStartOption>
                     </linkerStartOptions>
                 </configuration>
             </plugin>
