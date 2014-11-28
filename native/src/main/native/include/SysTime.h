@@ -39,6 +39,14 @@ JNIEXPORT jlong JNICALL Java_edu_SysTime_rdtscp
 JNIEXPORT jint JNICALL Java_edu_SysTime_compress
   (JNIEnv *, jclass, jintArray, jbyteArray);
 
+/*
+ * Class:     edu_SysTime
+ * Method:    compressCritical
+ * Signature: ([I[B)I
+ */
+JNIEXPORT jint JNICALL Java_edu_SysTime_compressCritical
+  (JNIEnv *, jclass, jintArray, jbyteArray);
+
 #ifdef __cplusplus
 }
 #endif
