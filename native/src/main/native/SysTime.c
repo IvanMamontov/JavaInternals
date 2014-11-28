@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <inttypes.h>
 #include "SysTime.h"
-#include "Compressor.h"
+#include "compressor.h"
 #include "simdcomp.h"
 
 JNIEXPORT jlong JNICALL Java_edu_SysTime_rdtsc(JNIEnv *env, jclass jobj)
