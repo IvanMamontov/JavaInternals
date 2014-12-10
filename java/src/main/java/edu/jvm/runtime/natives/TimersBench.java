@@ -31,10 +31,10 @@ public class TimersBench {
         return System.nanoTime();
     }
 
-//    @Benchmark
-//    public long latency_currentTime() {
-//        return System.currentTimeMillis();
-//    }
+    @Benchmark
+    public long latency_currentTime() {
+        return System.currentTimeMillis();
+    }
 
     @Benchmark
     public long latency_rdtsc() {
@@ -56,15 +56,15 @@ public class TimersBench {
         return cur;
     }
 
-//    @Benchmark
-//    public long granularity_currentTime() {
-//        long cur;
-//        do {
-//            cur = System.currentTimeMillis();
-//        } while (cur == lastValue);
-//        lastValue = cur;
-//        return cur;
-//    }
+    @Benchmark
+    public long granularity_currentTime() {
+        long cur;
+        do {
+            cur = System.currentTimeMillis();
+        } while (cur == lastValue);
+        lastValue = cur;
+        return cur;
+    }
 
     @Benchmark
     public long granularity_rdtsc() {
@@ -96,10 +96,6 @@ public class TimersBench {
         pw.println(System.getProperty("os.name") + ", " + System.getProperty("os.version") + ", " + System.getProperty("os.arch"));
 
         int cpus = figureOutHotCPUs(pw);
-//
-//        runWith(pw, 1,          "-client");
-//        runWith(pw, cpus / 2,   "-client");
-//        runWith(pw, cpus,       "-client");
 
         runWith(pw, 1,          "-server");
         runWith(pw, cpus / 2,   "-server");
