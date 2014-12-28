@@ -40,7 +40,8 @@
 
                     <compilerProvider>generic</compilerProvider>
                     <compilerStartOptions>
-                        <compilerStartOption>-fPIC -O3</compilerStartOption>
+                        <compilerStartOption>-fPIC -std=c99 -O3 -march=native -Wall -Wextra -pedantic
+                        </compilerStartOption>
                     </compilerStartOptions>
                     <sources>
                         <source>

@@ -1,52 +1,14 @@
-#include <stdio.h>
-#include <inttypes.h>
 #include "nativeutils.h"
+#include "timers.h"
 
-JNIEXPORT jlong JNICALL Java_edu_SysTime_rdtsc(JNIEnv *env, jclass jobj)
+extern unsigned long read_rdtscp(void);
+
+JNIEXPORT jlong JNICALL Java_edu_NativeUtils_rdtscp(JNIEnv *env, jclass jobj)
 {
-  unsigned int lo, hi;
-  asm volatile (
-     "rdtsc"
-   : "=a"(lo), "=d"(hi) /* outputs */
-   : "a"(0)             /* inputs */
-   : "%ebx", "%ecx");     /* clobbers*/
-  long long x = ((unsigned long long)lo) | (((unsigned long long)hi) << 32);
-  return (jlong) x;
+  return (jlong) read_rdtscp();
 }
 
-JNIEXPORT jlong JNICALL JavaCritical_edu_SysTime_rdtsc()
+JNIEXPORT jlong JNICALL JavaCritical_edu_NativeUtils_rdtscp()
 {
-  unsigned int lo, hi;
-  asm volatile (
-     "rdtsc"
-   : "=a"(lo), "=d"(hi) /* outputs */
-   : "a"(0)             /* inputs */
-   : "%ebx", "%ecx");     /* clobbers*/
-  long long x = ((unsigned long long)lo) | (((unsigned long long)hi) << 32);
-  return (jlong) x;
-}
-
-JNIEXPORT jlong JNICALL Java_edu_SysTime_cpuidrdtsc(JNIEnv *env, jclass jobj)
-{
-  unsigned int lo, hi;
-  asm volatile (
-     "cpuid \n"
-     "rdtsc"
-   : "=a"(lo), "=d"(hi) /* outputs */
-   : "a"(0)             /* inputs */
-   : "%ebx", "%ecx");     /* clobbers*/
-  long long x = ((unsigned long long)lo) | (((unsigned long long)hi) << 32);
-  return (jlong) x;
-}
-
-JNIEXPORT jlong JNICALL Java_edu_SysTime_rdtscp(JNIEnv *env, jclass jobj)
-{
-  unsigned int lo, hi;
-  asm volatile (
-     "rdtscp"
-   : "=a"(lo), "=d"(hi) /* outputs */
-   : "a"(0)             /* inputs */
-   : "%ebx", "%ecx");     /* clobbers*/
-  long long x = ((unsigned long long)lo) | (((unsigned long long)hi) << 32);
-  return (jlong) x;
+  return (jlong) read_rdtscp();
 }
