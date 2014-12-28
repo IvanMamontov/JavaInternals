@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <inttypes.h>
-#include "SysTime.h"
+#include "nativeutils.h"
 
 JNIEXPORT jlong JNICALL Java_edu_SysTime_rdtsc(JNIEnv *env, jclass jobj)
 {

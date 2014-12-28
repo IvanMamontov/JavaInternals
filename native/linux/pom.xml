@@ -35,9 +35,9 @@
                     <javahOS>linux</javahOS>
                     <javahVerbose>false</javahVerbose>
                     <javahOutputDirectory>../src/main/native/include</javahOutputDirectory>
-                    <javahOutputFileName>SysTime.h</javahOutputFileName>
+                    <javahOutputFileName>nativeutils.h</javahOutputFileName>
                     <javahClassNames>
-                        <javahClassName>edu.SysTime</javahClassName>
+                        <javahClassName>edu.NativeUtils</javahClassName>
                     </javahClassNames>
 
                     <compilerProvider>generic</compilerProvider>
@@ -48,7 +48,7 @@
                         <source>
                             <directory>../src/main/native</directory>
                             <fileNames>
-                                <fileName>SysTime.c</fileName>
+                                <fileName>nativeutils.c</fileName>
                             </fileNames>
                         </source>
                     </sources>

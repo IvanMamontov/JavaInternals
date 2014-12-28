@@ -1,6 +1,6 @@
 package edu.jvm.runtime.natives;
 
-import edu.SysTime;
+import edu.NativeUtils;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.results.RunResult;
 import org.openjdk.jmh.runner.Runner;
@@ -10,7 +10,10 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
 import org.openjdk.jmh.runner.options.VerboseMode;
 
 import java.io.PrintWriter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -38,7 +41,7 @@ public class TimersBench {
 
     @Benchmark
     public long latency_rdtsc() {
-        return SysTime.rdtsc();
+        return NativeUtils.rdtsc();
     }
 
     @Benchmark
@@ -70,7 +73,7 @@ public class TimersBench {
     public long granularity_rdtsc() {
         long cur;
         do {
-            cur = SysTime.rdtsc();
+            cur = NativeUtils.rdtsc();
         } while (cur == lastValue);
         lastValue = cur;
         return cur;
