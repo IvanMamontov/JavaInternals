@@ -47,8 +47,8 @@ public class Utils {
      * <b>Note:</b> this method has non-linear growth on low iteration counts.
      *
      * @param iterations amount of loop iterations.
-     * @see <a href="https://bugs.openjdk.java.net/browse/JDK-6869327">Add new
-     * C2 flag to keep safepoints in counted loops</a>
+     * @see <a href="https://bugs.openjdk.java.net/browse/JDK-6869327">
+     * Add new C2 flag to keep safepoints in counted loops</a>
      */
     public static double slowpoke(int iterations) {
         double d = 0;
