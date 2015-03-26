@@ -21,10 +21,23 @@ public class Utils {
         return arr;
     }
 
+    public static long[] newRandomLongArray(int size) {
+        long[] arr = new long[size];
+        fill(arr);
+        return arr;
+    }
+
     private static void fill(int[] array) {
         Random rnd = new Random(SEED);
         for (int i = 0; i < array.length; i++) {
             array[i] = rnd.nextInt();
+        }
+    }
+
+    private static void fill(long[] array) {
+        Random rnd = new Random(SEED);
+        for (int i = 0; i < array.length; i++) {
+            array[i] = rnd.nextLong();
         }
     }
 
