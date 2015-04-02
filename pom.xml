@@ -22,7 +22,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <uberjar.name>benchmarks</uberjar.name>
         <javac.target>1.7</javac.target>
-        <jmh.version>1.7</jmh.version>
+        <jmh.version>1.7.1</jmh.version>
     </properties>
 
     <dependencyManagement>
