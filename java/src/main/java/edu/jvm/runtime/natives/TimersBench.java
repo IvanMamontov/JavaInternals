@@ -1,5 +1,6 @@
 package edu.jvm.runtime.natives;
 
+import edu.LatencyTest;
 import edu.NativeUtils;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.results.RunResult;
@@ -22,52 +23,52 @@ import java.util.concurrent.TimeUnit;
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
 @Warmup(iterations = 5, time = 1000, timeUnit = TimeUnit.MILLISECONDS)
-@Measurement(iterations = 5, time = 1000, timeUnit = TimeUnit.MILLISECONDS)
-@Fork(value = 5)
+@Measurement(iterations = 2, time = 1000, timeUnit = TimeUnit.MILLISECONDS)
+@Fork(value = 1)
 @State(Scope.Thread)
 public class TimersBench {
 
     private long lastValue;
 
-    @Benchmark
-    public long latency_nanotime() {
-        return System.nanoTime();
-    }
-
-    @Benchmark
-    public long latency_currentTime() {
-        return System.currentTimeMillis();
-    }
-
-    @Benchmark
-    public long latency_rdtsc() {
-        return NativeUtils.rdtsc();
-    }
-
-    @Benchmark
-    public long latency_baseline() {
-        return lastValue++;
-    }
-
-    @Benchmark
-    public long granularity_nanotime() {
-        long cur;
-        do {
-            cur = System.nanoTime();
-        } while (cur == lastValue);
-        lastValue = cur;
-        return cur;
-    }
-
-    @Benchmark
-    public long granularity_currentTime() {
-        long cur;
-        do {
-            cur = System.currentTimeMillis();
-        } while (cur == lastValue);
-        lastValue = cur;
-        return cur;
-    }
+//    @Benchmark
+//    public long latency_nanotime() {
+//        return System.nanoTime();
+//    }
+//
+//    @Benchmark
+//    public long latency_currentTime() {
+//        return System.currentTimeMillis();
+//    }
+//
+//    @Benchmark
+//    public long latency_rdtsc() {
+//        return NativeUtils.rdtsc();
+//    }
+//
+//    @Benchmark
+//    public long latency_baseline() {
+//        return lastValue++;
+//    }
+//
+//    @Benchmark
+//    public long granularity_nanotime() {
+//        long cur;
+//        do {
+//            cur = System.nanoTime();
+//        } while (cur == lastValue);
+//        lastValue = cur;
+//        return cur;
+//    }
+//
+//    @Benchmark
+//    public long granularity_currentTime() {
+//        long cur;
+//        do {
+//            cur = System.currentTimeMillis();
+//        } while (cur == lastValue);
+//        lastValue = cur;
+//        return cur;
+//    }
 
     @Benchmark
     public long granularity_rdtsc() {
@@ -116,8 +117,9 @@ public class TimersBench {
         pw.println("Running with " + threads + " threads and " + Arrays.toString(jvmOpts) + ": ");
 
         Options opts = new OptionsBuilder()
+                .include(TimersBench.class.getName())
                 .threads(threads)
-                .verbosity(VerboseMode.SILENT)
+                .verbosity(VerboseMode.NORMAL)
                 .jvmArgs(jvmOpts)
                 .build();
 

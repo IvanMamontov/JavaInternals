@@ -48,6 +48,26 @@ public class Utils {
         }
     }
 
+    public static void thirdv(int[] arr, int x, int y) {
+        int temp = arr[x];
+        arr[x] = arr[y];
+        arr[y] = temp;
+    }
+
+    /*swap elements in array using subtraction variable*/
+    public static void subtractive(int[] arr, int x, int y) {
+        arr[x] = arr[x] + arr[y];
+        arr[y] = arr[x] - arr[y];
+        arr[x] = arr[x] - arr[y];
+    }
+
+    /*swap elements in array using bitwise xor*/
+    public static void bitwise(int[] arr, int x, int y) {
+        arr[x] ^= arr[y];
+        arr[y] ^= arr[x];
+        arr[x] ^= arr[y];
+    }
+
     /**
      * Hotspot doesn't put safepoints into counted int loops, because it
      * assumes that they will terminate just "fast enough"(In this case
