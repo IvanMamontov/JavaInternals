@@ -42,7 +42,6 @@ public class DocValuesBench54 {
     private IndexSearcher searcher;
     private int maxDoc;
     private Random random;
-    ;
 
     @Setup
     public void init() throws IOException {
@@ -99,6 +98,39 @@ public class DocValuesBench54 {
     public int iterateAllRangeQuery() throws IOException {
         int result;
         Query query = DocValuesRangeQuery.newLongRange(getStore(), 1L, 1L, true, true);
+        query = query.rewrite(reader);
+        Weight weight = query.createWeight(searcher, false);
+        Scorer scorer = weight.scorer(leafReaderContext);
+        DocIdSetIterator docs = scorer.iterator();
+        result = 0;
+        while (docs.nextDoc() != DocIdSetIterator.NO_MORE_DOCS) {
+            result++;
+        }
+        return result;
+    }
+
+    @Benchmark
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    public int iterateAllNumberQuery() throws IOException {
+        int result;
+        Query query = new DocValuesNumberQuery(getStore(), 1L);
+        query = query.rewrite(reader);
+        Weight weight = query.createWeight(searcher, false);
+        Scorer scorer = weight.scorer(leafReaderContext);
+        DocIdSetIterator docs = scorer.iterator();
+        result = 0;
+        while (docs.nextDoc() != DocIdSetIterator.NO_MORE_DOCS) {
+            result++;
+        }
+        return result;
+    }
+
+
+    @Benchmark
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    public int iterateAllIvansQuery() throws IOException {
+        int result;
+        Query query = new DocValuesIvanQuery(getStore(), 1L);
         query = query.rewrite(reader);
         Weight weight = query.createWeight(searcher, false);
         Scorer scorer = weight.scorer(leafReaderContext);
