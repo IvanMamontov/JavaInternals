@@ -14,17 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package edu.jvm.runtime;
+package org.apache.lucene.search;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 import org.apache.lucene.document.NumericDocValuesField;
 import org.apache.lucene.document.SortedNumericDocValuesField;
 import org.apache.lucene.index.DocValues;
 import org.apache.lucene.index.LeafReaderContext;
 import org.apache.lucene.index.NumericDocValues;
-import org.apache.lucene.search.*;
-
-import java.io.IOException;
-import java.util.Objects;
+import org.apache.lucene.index.SortedNumericDocValues;
 
 /**
  * Like {@link DocValuesTermsQuery}, but this query only
@@ -32,7 +36,7 @@ import java.util.Objects;
  * {@link SortedNumericDocValuesField}, matching
  * all documents whose value in the specified field is
  * contained in the provided set of long values.
- * <p>
+ *
  * <p>
  * <b>NOTE</b>: be very careful using this query: it is
  * typically much slower than using {@code TermsQuery},
@@ -40,35 +44,56 @@ import java.util.Objects;
  *
  * @lucene.experimental
  */
-public class DocValuesIvanQuery extends Query {
+public class DocValuesNumbersQuery2 extends Query {
 
     private final String field;
-    private final long number;
+    private final LongHashSet numbers;
 
-    public DocValuesIvanQuery(String field, long number) {
+    public DocValuesNumbersQuery2(String field, long[] numbers) {
         this.field = Objects.requireNonNull(field);
-        this.number = number;
+        this.numbers = new LongHashSet(numbers);
+    }
+
+    public DocValuesNumbersQuery2(String field, Collection<Long> numbers) {
+        this.field = Objects.requireNonNull(field);
+        this.numbers = new LongHashSet(numbers.stream().mapToLong(Long::longValue).toArray());
+    }
+
+    public DocValuesNumbersQuery2(String field, Long... numbers) {
+        this(field, new HashSet<Long>(Arrays.asList(numbers)));
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return sameClassAs(other) &&
+                equalsTo(getClass().cast(other));
+    }
+
+    private boolean equalsTo(DocValuesNumbersQuery2 other) {
+        return field.equals(other.field) &&
+                numbers.equals(other.numbers);
     }
 
     @Override
     public int hashCode() {
-        return 31 * classHash() + Objects.hash(field, number);
+        return 31 * classHash() + Objects.hash(field, numbers);
     }
 
     public String getField() {
         return field;
     }
 
-    @Override
-    public String toString(String defaultField) {
-        return field +
-                ": " +
-                number;
+    public Set<Long> getNumbers() {
+        return numbers;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        return false;
+    public String toString(String defaultField) {
+        return new StringBuilder()
+                .append(field)
+                .append(": ")
+                .append(numbers.toString())
+                .toString();
     }
 
     @Override
@@ -87,12 +112,32 @@ public class DocValuesIvanQuery extends Query {
 
                     @Override
                     public int nextDoc() throws IOException {
-                        return values.nextDoc();
+                        return advance(docID() + 1);
                     }
 
                     @Override
                     public int advance(int target) throws IOException {
-                        return values.advance(target);
+                        return doNext(values.advance(target));
+                    }
+
+                    private int doNext(int doc) throws IOException {
+                        for (;; doc = values.nextDoc()) {
+                            if (doc == NO_MORE_DOCS) {
+                                return NO_MORE_DOCS;
+                            } else if (matches()) {
+                                return doc;
+                            }
+                        }
+                    }
+
+                    private boolean matches() throws IOException {
+//                        int count = values.docValueCount();
+//                        for(int i=0;i<count;i++) {
+                            if (values.longValue() == 1) {
+                                return true;
+                            }
+//                        }
+                        return false;
                     }
 
                     @Override
@@ -123,6 +168,5 @@ public class DocValuesIvanQuery extends Query {
                 };
             }
         };
-
     }
 }

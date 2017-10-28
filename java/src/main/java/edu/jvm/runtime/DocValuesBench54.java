@@ -55,9 +55,9 @@ public class DocValuesBench54 {
 
         //this bitset is used as baseline for all measurements
         bitSet = new FixedBitSet(maxDoc);
-        Query query = DocValuesRangeQuery.newLongRange(getStore(), 1L, 1L, true, true);
+        Query query = new DocValuesNumbersQuery2(getStore(), 1L);
         query = query.rewrite(reader);
-        Weight weight = query.createWeight(searcher, false);
+        Weight weight = query.createWeight(searcher, false, 0);
         Scorer scorer = weight.scorer(leafReaderContext);
         DocIdSetIterator docs = scorer.iterator();
         int doc;
@@ -80,7 +80,7 @@ public class DocValuesBench54 {
     @OutputTimeUnit(TimeUnit.NANOSECONDS)
     public long randomGetDocValues() throws IOException {
         NumericDocValues numericDocValues = DocValues.getNumeric(leafReaderContext.reader(), getStore());
-        return numericDocValues.get(random.nextInt(maxDoc - 1));
+        return numericDocValues.advance(random.nextInt(maxDoc - 1));
     }
 
     @Benchmark
@@ -97,9 +97,9 @@ public class DocValuesBench54 {
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     public int iterateAllRangeQuery() throws IOException {
         int result;
-        Query query = DocValuesRangeQuery.newLongRange(getStore(), 1L, 1L, true, true);
+        Query query = new DocValuesNumbersQuery2(getStore(), 1L);
         query = query.rewrite(reader);
-        Weight weight = query.createWeight(searcher, false);
+        Weight weight = query.createWeight(searcher, false, 0);
         Scorer scorer = weight.scorer(leafReaderContext);
         DocIdSetIterator docs = scorer.iterator();
         result = 0;
@@ -113,9 +113,9 @@ public class DocValuesBench54 {
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     public int iterateAllNumberQuery() throws IOException {
         int result;
-        Query query = new DocValuesNumberQuery(getStore(), 1L);
+        Query query = new DocValuesNumbersQuery2(getStore(), 1L);
         query = query.rewrite(reader);
-        Weight weight = query.createWeight(searcher, false);
+        Weight weight = query.createWeight(searcher, false, 0);
         Scorer scorer = weight.scorer(leafReaderContext);
         DocIdSetIterator docs = scorer.iterator();
         result = 0;
@@ -132,7 +132,7 @@ public class DocValuesBench54 {
         int result;
         Query query = new DocValuesIvanQuery(getStore(), 1L);
         query = query.rewrite(reader);
-        Weight weight = query.createWeight(searcher, false);
+        Weight weight = query.createWeight(searcher, false, 0);
         Scorer scorer = weight.scorer(leafReaderContext);
         DocIdSetIterator docs = scorer.iterator();
         result = 0;
@@ -148,7 +148,7 @@ public class DocValuesBench54 {
         int result = 0;
         NumericDocValues numericDocValues = DocValues.getNumeric(leafReaderContext.reader(), getStore());
         for (int j = 0; j < maxDoc; j++) {
-            long value = numericDocValues.get(j);
+            long value = numericDocValues.advance(j);
             result += value;
         }
         return result;

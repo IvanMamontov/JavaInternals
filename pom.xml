@@ -21,9 +21,9 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <uberjar.name>benchmarks</uberjar.name>
-        <javac.target>1.7</javac.target>
+        <javac.target>1.8</javac.target>
         <jmh.version>1.19</jmh.version>
-        <lucene.version>5.5.0</lucene.version>
+        <lucene.version>7.0.0</lucene.version>
     </properties>
 
     <dependencyManagement>
